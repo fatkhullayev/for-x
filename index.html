@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xadichaga</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Dancing+Script:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .iphone-frame {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 12px solid #1a1a1a;
+      border-radius: 40px;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 30px;
+      background: #1a1a1a;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      z-index: 50;
+    }
+
+    .status-bar {
+      background: #f8f8f8;
+      height: 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 25px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      position: relative;
+      z-index: 40;
+    }
+
+    .safari-bar {
+      background: #f8f8f8;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .address-bar {
+      background: #e8e8e8;
+      border-radius: 10px;
+      padding: 8px 12px;
+      flex: 1;
+      font-size: 13px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .safari-content {
+      background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffeef8 100%);
+      min-height: calc(100vh - 200px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: absolute;
+      color: rgba(255, 105, 180, 0.3);
+      animation: float 6s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .envelope-container {
+      perspective: 1000px;
+      opacity: 0;
+      transform: translateY(-100px);
+      animation: dropIn 1.5s ease-out forwards;
+    }
+
+    @keyframes dropIn {
+      0% { opacity: 0; transform: translateY(-100px) rotate(-5deg); }
+      60% { opacity: 1; transform: translateY(20px) rotate(3deg); }
+      80% { transform: translateY(-10px) rotate(-2deg); }
+      100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    }
+
+    .envelope {
+      width: 280px;
+      height: 180px;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      position: relative;
+      border-radius: 8px;
+      box-shadow: 0 20px 40px rgba(196, 69, 105, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope:hover {
+      transform: scale(1.05);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(135deg, #ff8fab 0%, #d46685 100%);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top;
+      transition: transform 0.6s ease;
+      z-index: 10;
+    }
+
+    .envelope.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 0;
+    }
+
+    .envelope-body {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      clip-path: polygon(0 100%, 0 50%, 50% 80%, 100% 50%, 100% 100%);
+    }
+
+    .envelope-sticker {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    .open-btn {
+      opacity: 0;
+      transform: scale(0.8);
+      animation: fadeInUp 0.6s ease-out 1.5s forwards;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 16px 40px;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      transition: all 0.3s ease;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .open-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .letter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 92%;
+      max-width: 380px;
+      background: #fffef8;
+      background-image:
+              linear-gradient(90deg, transparent 0%, transparent 98%, #f0e6d3 98%, #f0e6d3 100%),
+              linear-gradient(#e8e0d5 1px, transparent 1px);
+      background-size: 100% 100%, 100% 2.2rem;
+      background-attachment: local;
+      padding: 2.5rem;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 100;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .letter.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      top: 45%;
+    }
+
+    .letter-content {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      color: #5d4037;
+      text-align: center;
+    }
+
+    .letter-content h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: #c44569;
+      margin-bottom: 1rem;
+    }
+
+    .wax-seal {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #c44569 0%, #8b2635 100%);
+      border-radius: 50%;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      font-size: 24px;
+    }
+
+    .music-player {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 200;
+      width: 90%;
+      max-width: 350px;
+    }
+
+    .play-btn {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .music-info {
+      flex: 1;
+    }
+
+    .music-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-artist {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      animation: sparkle 3s linear infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    .close-letter {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: #666;
+      transition: all 0.3s;
+    }
+
+    .close-letter:hover {
+      background: rgba(0,0,0,0.2);
+      transform: rotate(90deg);
+    }
+
+    @media (max-width: 480px) {
+      .iphone-frame {
+        border: none;
+        border-radius: 0;
+        height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+<div class="iphone-frame w-full max-w-md mx-auto">
+  <!-- Notch -->
+  <div class="notch"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span id="time">9:41</span>
+    <div class="flex gap-2 items-center">
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+        <path d="M8 0L15.5 12H0.5L8 0Z"/>
+      </svg>
+      <svg width="20" height="12" viewBox="0 0 20 12" fill="currentColor">
+        <rect x="0" y="8" width="3" height="4" rx="0.5"/>
+        <rect x="5" y="5" width="3" height="7" rx="0.5"/>
+        <rect x="10" y="2" width="3" height="10" rx="0.5"/>
+        <rect x="15" y="0" width="3" height="12" rx="0.5"/>
+      </svg>
+      <div class="w-6 h-3 border border-gray-400 rounded-sm relative">
+        <div class="absolute top-0.5 left-0.5 bottom-0.5 right-1 bg-black rounded-sm"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Safari Address Bar -->
+  <div class="safari-bar">
+    <svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10 18L2 10L10 2"/>
+    </svg>
+    <svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M2 2L10 10L2 18"/>
+    </svg>
+    <div class="address-bar">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="5" cy="5" r="4"/>
+        <path d="M11 11L8 8"/>
+      </svg>
+      <span>xadichaga-xat.love</span>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+        <path d="M6 0L7.5 4.5L12 6L7.5 7.5L6 12L4.5 7.5L0 6L4.5 4.5L6 0Z"/>
+      </svg>
+    </div>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 15V3M3 9H15"/>
+    </svg>
+  </div>
+
+  <!-- Main Content -->
+  <div class="safari-content relative min-h-[600px] flex flex-col items-center justify-center p-6">
+
+    <!-- Floating Hearts Background -->
+    <div id="hearts-container"></div>
+
+    <!-- Step 1: Envelope -->
+    <div id="step1" class="envelope-container flex flex-col items-center gap-8">
+      <div class="envelope" id="envelope">
+        <div class="envelope-flap"></div>
+        <div class="envelope-body"></div>
+        <div class="envelope-sticker">💌</div>
+        <!-- Sparkles -->
+        <div class="sparkle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+        <div class="sparkle" style="top: 80%; left: 20%; animation-delay: 1s;"></div>
+        <div class="sparkle" style="top: 30%; right: 15%; animation-delay: 2s;"></div>
+      </div>
+
+      <button class="open-btn" id="openBtn" onclick="openLetter()">
+        Xatni Ochish ✨
+      </button>
+
+      <p class="text-gray-600 text-sm mt-4 font-medium opacity-0 animate-pulse" style="animation-delay: 2s; animation-fill-mode: forwards;">
+        Sizga maxsus xat keldi...
+      </p>
+    </div>
+
+    <!-- Step 2: Letter Content -->
+    <div id="letter" class="letter" style="max-width: 380px; padding: 2.5rem;">
+      <div class="close-letter" onclick="closeLetter()">×</div>
+      <div class="wax-seal">💝</div>
+      <div class="letter-content" style="font-size: 1.5rem; line-height: 2.2rem;">
+        <h1 style="font-size: 2.4rem;">Хадича,</h1>
+
+        <p>
+          Знаешь, иногда я ловлю себя на мысли, как же мне повезло иметь такого человека рядом. Твоя улыбка способна развеять любую тьму, а доброта — это редчайший дар, которым обладаешь именно ты.
+        </p>
+        <br>
+
+        <p>
+          Должен предупредить: не удивляйся, если я ненадолго исчезну. Много личных дел, суета, жизнь. Но это не значит, что ты перестала быть важной. Наоборот — <strong style="color: #8b2635;">ты мой самый близкий, самый надежный друг.</strong> И это никогда не изменится.
+        </p>
+        <br>
+
+        <p>
+          Давно пора собраться всей группой. <strong>Середина апреля</strong> — если получится, давай увидимся всей компанией. Просто посидим, поговорим, будем собой.
+        </p>
+        <br>
+
+        <p>
+          Придешь?
+        </p>
+        <br>
+
+        <p style="font-size: 1.3rem; opacity: 0.9; border-top: 1px dashed #c44569; padding-top: 15px; margin-top: 10px;">
+          Mister X
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- Bottom Bar -->
+  <div class="bg-gray-100 h-8 flex justify-center items-end pb-2">
+    <div class="w-32 h-1 bg-gray-400 rounded-full"></div>
+  </div>
+</div>
+
+
+
+<script>
+  // Update time
+  function updateTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    document.getElementById('time').textContent = `${hours}:${minutes}`;
+  }
+  setInterval(updateTime, 1000);
+  updateTime();
+
+  // Create floating hearts
+  function createHearts() {
+    const container = document.getElementById('hearts-container');
+    const hearts = ['💕', '💖', '💗', '💓', '💝', '🌸', '✨'];
+
+    for (let i = 0; i < 15; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
+      heart.style.animationDelay = Math.random() * 5 + 's';
+      heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+      container.appendChild(heart);
+    }
+  }
+  createHearts();
+
+  // Letter functionality
+  let isLetterOpen = false;
+
+  function openLetter() {
+    if (isLetterOpen) return;
+
+    const envelope = document.getElementById('envelope');
+    const letter = document.getElementById('letter');
+    const openBtn = document.getElementById('openBtn');
+    const step1 = document.getElementById('step1');
+
+    // Open envelope animation
+    envelope.classList.add('open');
+
+    // Hide step 1 elements with fade
+    setTimeout(() => {
+      step1.style.opacity = '0';
+      step1.style.transform = 'scale(0.8)';
+      step1.style.transition = 'all 0.5s ease';
+
+      setTimeout(() => {
+        step1.classList.add('hidden');
+        letter.classList.remove('hidden');
+
+        // Show letter with delay for smooth transition
+        setTimeout(() => {
+          letter.classList.add('show');
+          isLetterOpen = true;
+
+          // Auto play music when letter opens
+          playMusic();
+        }, 100);
+      }, 500);
+    }, 600);
+  }
+
+  function closeLetter() {
+    const letter = document.getElementById('letter');
+    const step1 = document.getElementById('step1');
+    const envelope = document.getElementById('envelope');
+
+    letter.classList.remove('show');
+
+    setTimeout(() => {
+      letter.classList.add('hidden');
+      step1.classList.remove('hidden');
+
+      setTimeout(() => {
+        step1.style.opacity = '1';
+        step1.style.transform = 'scale(1)';
+        envelope.classList.remove('open');
+        isLetterOpen = false;
+      }, 100);
+    }, 500);
+  }
+
+  // Music Player
+  let isPlaying = false;
+  const audio = document.getElementById('bgMusic');
+  const progress = document.getElementById('progress');
+  let progressInterval;
+
+  function toggleMusic() {
+    if (isPlaying) {
+      pauseMusic();
+    } else {
+      playMusic();
+    }
+  }
+
+  function playMusic() {
+    audio.play().then(() => {
+      isPlaying = true;
+      document.getElementById('playIcon').classList.add('hidden');
+      document.getElementById('pauseIcon').classList.remove('hidden');
+
+      // Simulate progress (since we don't have real duration)
+      let width = 0;
+      progressInterval = setInterval(() => {
+        width += 0.5;
+        if (width > 100) width = 0;
+        progress.style.width = width + '%';
+      }, 1000);
+    }).catch(e => {
+      console.log('Audio play failed:', e);
+    });
+  }
+
+  function pauseMusic() {
+    audio.pause();
+    isPlaying = false;
+    document.getElementById('playIcon').classList.remove('hidden');
+    document.getElementById('pauseIcon').classList.add('hidden');
+    clearInterval(progressInterval);
+  }
+
+  // Click envelope to open too
+  document.getElementById('envelope').addEventListener('click', function(e) {
+    if (!isLetterOpen) {
+      openLetter();
+    }
+  });
+
+  // Add some interactive sparkles on click
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.letter') || e.target.closest('.envelope')) return;
+
+    const sparkle = document.createElement('div');
+    sparkle.style.position = 'fixed';
+    sparkle.style.left = e.clientX + 'px';
+    sparkle.style.top = e.clientY + 'px';
+    sparkle.style.width = '20px';
+    sparkle.style.height = '20px';
+    sparkle.style.background = 'radial-gradient(circle, #fff, transparent)';
+    sparkle.style.borderRadius = '50%';
+    sparkle.style.pointerEvents = 'none';
+    sparkle.style.animation = 'sparkle 1s ease-out forwards';
+    sparkle.style.zIndex = '9999';
+    document.body.appendChild(sparkle);
+
+    setTimeout(() => sparkle.remove(), 1000);
+  });
+</script>
+</body>
+</html>
